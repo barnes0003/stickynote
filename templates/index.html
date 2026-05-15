@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Stickynote — My Ideas{% endblock %}
+
+{% block content %}
+<div class="layout">
+
+  <!-- Sidebar: tag filter -->
+  <aside class="sidebar">
+    <h3 class="sidebar-title">Tags</h3>
+    <a href="{{ url_for('index') }}" class="tag-link {% if not tag_filter %}active{% endif %}">All</a>
+    {% for tag in all_tags %}
+      <a href="{{ url_for('index', tag=tag.name) }}"
+         class="tag-link {% if tag_filter == tag.name %}active{% endif %}">
+        {{ tag.name }}
+        <span class="tag-count">{{ tag.pins | length }}</span>
+      </a>
+    {% endfor %}
+  </aside>
+
+  <!-- Main: pin grid -->
+  <main class="main-content">
+    {% if search %}
+      <p class="results-label">Results for "<strong>{{ search }}</strong>" — {{ pins|length }} found</p>
+    {% elif tag_filter %}
+      <p class="results-label">Tag: <strong>#{{ tag_filter }}</strong> — {{ pins|length }} found</p>
+    {% endif %}
+
+    {% if pins %}
+      <div class="pin-grid">
+        {% for pin in pins %}
+          <a href="{{ url_for('view_pin', pin_id=pin.id) }}" class="pin-card">
+            {% if pin.image_url %}
+              <div class="pin-img" style="background-image: url('{{ pin.image_url }}')"></div>
+            {% else %}
+              <div class="pin-img pin-img-placeholder">
+                <span>{{ pin.title[0] | upper }}</span>
+              </div>
+            {% endif %}
+            <div class="pin-body">
+              <h2 class="pin-title">{{ pin.title }}</h2>
+              {% if pin.notes %}
+                <p class="pin-notes">{{ pin.notes[:100] }}{% if pin.notes|length > 100 %}…{% endif %}</p>
+              {% endif %}
+              {% if pin.tags %}
+                <div class="pin-tags">
+                  {% for tag in pin.tags %}
+                    <span class="tag">#{{ tag.name }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <span class="pin-date">{{ pin.created_at.strftime('%b %d, %Y') }}</span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No pins yet. <a href="{{ url_for('new_pin') }}">Add your first one →</a></p>
+      </div>
+    {% endif %}
+  </main>
+
+</div>
+{% endblock %}

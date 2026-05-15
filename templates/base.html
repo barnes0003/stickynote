@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Stickynote{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="{{ url_for('index') }}" class="nav-brand">📌 Stickynote</a>
+    <div class="nav-actions">
+      <form class="search-form" method="GET" action="{{ url_for('index') }}">
+        <input type="text" name="q" placeholder="Search pins…" value="{{ search if search else '' }}">
+        <button type="submit">Search</button>
+      </form>
+      <a href="{{ url_for('new_pin') }}" class="btn-primary">+ New Pin</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+</html>

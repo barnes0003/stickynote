@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ pin.title }} — Stickynote{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+
+  <div class="detail-back">
+    <a href="{{ url_for('index') }}">← Back to all pins</a>
+  </div>
+
+  <div class="detail-card">
+    {% if pin.image_url %}
+      <img class="detail-img" src="{{ pin.image_url }}" alt="{{ pin.title }}">
+    {% endif %}
+
+    <div class="detail-body">
+      <h1 class="detail-title">{{ pin.title }}</h1>
+
+      {% if pin.url %}
+        <a class="detail-link" href="{{ pin.url }}" target="_blank" rel="noopener">
+          🔗 {{ pin.url }}
+        </a>
+      {% endif %}
+
+      {% if pin.notes %}
+        <div class="detail-notes">{{ pin.notes }}</div>
+      {% endif %}
+
+      {% if pin.tags %}
+        <div class="pin-tags">
+          {% for tag in pin.tags %}
+            <a href="{{ url_for('index', tag=tag.name) }}" class="tag">#{{ tag.name }}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <p class="pin-date">Saved on {{ pin.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+
+      <div class="detail-actions">
+        <a href="{{ url_for('edit_pin', pin_id=pin.id) }}" class="btn-primary">Edit</a>
+        <form method="POST" action="{{ url_for('delete_pin', pin_id=pin.id) }}"
+              onsubmit="return confirm('Delete this pin?')">
+          <button type="submit" class="btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
